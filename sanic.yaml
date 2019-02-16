@@ -1,0 +1,106 @@
+buildables:
+  registry.placeholder.com/images/bloated_tails:
+    description: >
+      This image contains a bunch of standard installs.
+    build_dependencies:
+      - registry.placeholder.com/lib/apt/inotify-tools
+      - registry.placeholder.com/lib/apt/python-3.5
+      - registry.placeholder.com/lib/python/requests
+  registry.placeholder.com/images/db_tails:
+    description: >
+      This image extends bloated tails with sqlalchemy and redis
+    build_dependencies:
+      - registry.placeholder.com/lib/apt/libpq-dev
+      - registry.placeholder.com/lib/python/sqlalchemy
+      - registry.placeholder.com/lib/python/zope.sqlalchemy
+      - registry.placeholder.com/lib/python/redis
+      - registry.placeholder.com/lib/python/pymongo
+  registry.placeholder.com/images/python_test_base:
+    description: This image contains utilities for building and testing python code.
+    build_dependencies:
+      - registry.placeholder.com/lib/python/pytest
+      - registry.placeholder.com/lib/python/timeout-decorator
+  registry.placeholder.com/services/api:
+    description: Base api server
+    build_dependencies:
+      - registry.placeholder.com/lib/python/flask
+    build_groups:
+      - dev
+  registry.placeholder.com/services/web:
+    description: Web server
+    build_dependencies:
+      - registry.placeholder.com/lib/python/flask
+    build_groups:
+      - dev
+
+scripts: &default_scripts
+  make_secret: >
+    sanic kubectl get secret cluster-tls --namespace=kube-system --export -o yaml | sanic kubectl apply --namespace=${CLUSTER_ID} -f -
+  build_configs: >
+    cd $SANIC_ROOT &&
+    sanic run make_secret &&
+    rm -rf deploy/built && mkdir -p deploy/built &&
+    cd deploy/templates &&
+    phconfer --onetime ./*.mako 2>/dev/null || (phconfer --onetime ./*.mako 2>&1 | html2text && cd ../../ && exit 1) &&
+    cd ../../ &&
+    find deploy/built -type f -exec chmod 444 {} \;
+  test: >
+    sanic kubectl exec -it $(sanic kubectl get po | grep $"$1" | awk '{print $1;}') ./test.sh $2
+  scale: >
+    sanic kubectl scale -n ${CLUSTER_ID} deployment $1 --replicas=$2
+  _make_namespaces: >
+    while ! (sanic kubectl get namespace infra || sanic kubectl create namespace infra 2>/dev/null); do sleep 2; done
+  _wait_infra: >
+    while [ -n "$(sanic kubectl get po -n infra -o jsonpath='{.items[*].status.phase}' | sed 's/Running//g' | sed 's/ //g')" ];
+    do sleep 1; done
+  _update_cluster_redis: >
+    sanic run _wait_infra &&
+    sanic kubectl get pods -n infra | grep redis-ha | awk $'{print $1}' | xargs -I {} sanic kubectl exec -n infra -i {} -- redis-cli set LATEST_CLUSTER $CLUSTER_ID
+
+environments:
+  dev:
+    env_vars:
+      RUN_MODE: dev
+      IMAGE_TAG: latest
+      CLUSTER_ID: default
+    cluster:
+      domain: local.placeholder.com
+      tls_cert: deploy/dummy.cert
+      tls_key: deploy/dummy.key
+      masters:
+      - 127.0.0.1
+      cattle:
+      - 127.0.0.1
+      web_machines:
+      - 127.0.0.1
+      logs:
+        auth_request: /api/admin/login
+        data_machines:
+        - 127.0.0.1
+        memory: 1G
+      registry:
+        path: /registry
+    scripts:
+      <<: *default_scripts
+      init: >
+        sanic run _make_namespaces &&
+        sanic run _volumes &&
+        deploy/./charts.sh &&
+        sanic run deploy
+      deploy: >
+        if [ -z "$1" ]; then sanic build dev; else sanic build $1; fi &&
+        sanic run apply &&
+        sanic run _wait_cluster &&
+        sanic run _update_cluster_redis
+      apply: >
+        sanic run _label_cluster &&
+        sanic run build_configs &&
+        sanic kubectl replace --force --save-config -f deploy/built
+      _label_cluster: >
+        sanic kubectl label nodes --all --overwrite generic.busride.com=""
+      _wait_cluster: >
+        echo "Waiting for cluster to be active..." &&
+        while [ -n "$(sanic kubectl get po -o jsonpath='{.items[*].status.phase}' | sed 's/Running//g' | sed 's/ //g')" ];
+        do sleep 1; done
+      _volumes: >
+        sanic kubectl apply -f deploy/values/volumes.yaml
