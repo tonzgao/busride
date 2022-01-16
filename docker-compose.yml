@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi-gino-arq-uvicorn
-    image: fastapi-gino-arq-uvicorn
+    container_name: busride
+    image: busride
     env_file: .env
     environment:
       - COMPOSE_CONVERT_WINDOWS_PATHS=1
