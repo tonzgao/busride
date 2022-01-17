@@ -13,4 +13,4 @@ if isinstance(SENTRY_DSN, Secret) and SENTRY_DSN.__str__() not in ("None", ""):
     )
 
 app: FastAPI = FastAPI()
-db: MetaData = Gino(app, dsn=DATABASE_CONFIG.url)
+db: MetaData = Gino(app, dsn=DATABASE_CONFIG.db)
