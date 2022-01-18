@@ -1,4 +1,4 @@
-Busride
+# Busride
 
 Many services exist which have release dates (IMDB, Goodreads, Amazon, Metacritic, etc). However, it is a pain to constantly have to monitor these sites.
 
@@ -6,7 +6,7 @@ Busride will allow a user to submit their api keys for these services, query a u
 
 This is a non-profit personal project.
 
-# fastapi-gino-arq-uvicorn
+## Boilerplate - fastapi-gino-arq-uvicorn
 High-performance Async REST API, in Python. FastAPI + GINO + Arq + Uvicorn (powered by Redis & PostgreSQL).
 
 ## Contents
