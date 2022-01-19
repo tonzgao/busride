@@ -9,7 +9,7 @@ from starlette.datastructures import Secret
 class DatabaseURL(BaseModel):
     db: PostgresDsn
 
-    @validator('db')
+    @validator("db")
     def check_db_name(cls, v):
-        assert v.path and len(v.path) > 1, 'database must be provided'
+        assert v.path and len(v.path) > 1, "database must be provided"
         return v

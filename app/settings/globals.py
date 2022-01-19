@@ -17,9 +17,9 @@ DB_PASSWORD: Optional[Secret] = config(
 DB_HOST: str = config("DB_HOST", cast=str, default="localhost")
 DB_PORT: int = config("DB_PORT", cast=int, default=5432)
 DATABASE_CONFIG: DatabaseURL = DatabaseURL(
-  db=f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DATABASE}'
+    db=f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DATABASE}"
 )
-ALEMBIC_CONFIG: DatabaseURL = f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DATABASE}'
+ALEMBIC_CONFIG: DatabaseURL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DATABASE}"
 
 REDIS_IP: str = config("REDIS_IP", cast=str, default="127.0.0.1")
 REDIS_PORT: int = config("REDIS_PORT", cast=int, default=6379)
