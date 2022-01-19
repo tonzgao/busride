@@ -1,0 +1,26 @@
+from fastapi import APIRouter, Depends
+
+from ..models.orm.interest import Interest as ORMInterest
+from ..models.pydantic.user import User
+from ..models.pydantic.interest import Interest, InterestCreateIn
+from .auth import get_current_user
+
+router = APIRouter()
+
+
+@router.post("/interests", tags=["Interests"], response_model=Interest)
+async def create_interest(
+    request: InterestCreateIn, current_user: User = Depends(get_current_user)
+):
+    new_interest: ORMInterest = await ORMInterest.create(
+        **request.dict(), user_id=current_user.id
+    )
+    return Interest.from_orm(new_interest)
+
+
+@router.delete(
+    "/interests/{id}", tags=["Interests"], response_model=Interest
+)
+async def delete_interest(id: int):
+    interest: ORMInterest = await ORMInterest.get(id)
+    return await interest.delete()

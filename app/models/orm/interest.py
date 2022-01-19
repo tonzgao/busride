@@ -12,3 +12,6 @@ class Interest(Base):
         db.BigInteger, db.ForeignKey("entities.id"), nullable=False
     )
     data = db.Column(db.JSONB)
+    _idx1 = db.Index(
+        "interest_idx_user_entity", "user_id", "entity_id", unique=True
+    )

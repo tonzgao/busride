@@ -11,10 +11,11 @@ from app.application import app
 from app.routes.users import router as user_router
 from app.routes.entities import router as entity_router
 from app.routes.apis import router as api_router
+from app.routes.interests import router as interest_router
 from app.settings.globals import SENTRY_DSN
 
 
-ROUTERS = (user_router, entity_router, api_router)
+ROUTERS = (user_router, entity_router, api_router, interest_router)
 
 for r in ROUTERS:
     app.include_router(r)

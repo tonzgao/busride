@@ -12,6 +12,7 @@ from app.models.orm.user import User
 from app.models.orm.api import Api
 from app.models.orm.entity import Entity
 from app.models.orm.release import Release
+from app.models.orm.interest import Interest
 
 # To include a model in migrations, add a line here.
 # from app.models.orm.person import Person
