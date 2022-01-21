@@ -1,24 +1,34 @@
-from fastapi import Depends, FastAPI
-from fastapi.security import OAuth2PasswordBearer
-from ..models.pydantic.user import User
+from fastapi import Depends, APIRouter
+from fastapi.security import OAuth2PasswordRequestForm
 
-app = FastAPI()
+from fastapi_login.exceptions import InvalidCredentialsException
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+from ..models.orm.user import User as ORMUser
+from fastapi_login import LoginManager
 
+manager = LoginManager(
+    'secret', '/login',
+    use_cookie=True
+)
 
-class FakeUser:
-    id = 1
+router = APIRouter()
 
+@manager.user_loader()
+async def query_user(email: str):
+    return await ORMUser.get_by_email(email)
+    
+@router.post('/login')
+async def login(data: OAuth2PasswordRequestForm = Depends()):
+    email = data.username
+    password = data.password
 
-def fake_decode_token():
-    return FakeUser()
+    user = await query_user(email)
+    if not user:
+        raise InvalidCredentialsException
+    elif password != user.password:
+        raise InvalidCredentialsException
 
-
-# async def get_current_user(token: str = Depends(oauth2_scheme)):
-#   return user
-
-
-async def get_current_user():
-    user = fake_decode_token()
-    return user
+    access_token = manager.create_access_token(
+        data={'sub': email}
+    )
+    return {'token': access_token}

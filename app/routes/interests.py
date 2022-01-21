@@ -3,14 +3,14 @@ from fastapi import APIRouter, Depends
 from ..models.orm.interest import Interest as ORMInterest
 from ..models.pydantic.user import User
 from ..models.pydantic.interest import Interest, InterestCreateIn
-from .auth import get_current_user
+from .auth import manager
 
 router = APIRouter()
 
 
 @router.post("/interests", tags=["Interests"], response_model=Interest)
 async def create_interest(
-    request: InterestCreateIn, current_user: User = Depends(get_current_user)
+    request: InterestCreateIn, current_user: User = Depends(manager)
 ):
     new_interest: ORMInterest = await ORMInterest.create(
         **request.dict(), user_id=current_user.id
