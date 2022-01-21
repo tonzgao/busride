@@ -18,9 +18,7 @@ async def create_interest(
     return Interest.from_orm(new_interest)
 
 
-@router.delete(
-    "/interests/{id}", tags=["Interests"], response_model=Interest
-)
+@router.delete("/interests/{id}", tags=["Interests"], response_model=Interest)
 async def delete_interest(id: int):
     interest: ORMInterest = await ORMInterest.get(id)
     return await interest.delete()

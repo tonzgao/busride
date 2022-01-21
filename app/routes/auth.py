@@ -6,18 +6,22 @@ from fastapi_login.exceptions import InvalidCredentialsException
 from ..models.orm.user import User as ORMUser
 from fastapi_login import LoginManager
 
-manager = LoginManager(
-    'secret', '/login',
-    use_cookie=True
-)
+manager = LoginManager("secret", "/login", use_cookie=True)
 
 router = APIRouter()
+
 
 @manager.user_loader()
 async def query_user(email: str):
     return await ORMUser.get_by_email(email)
-    
-@router.post('/login')
+
+
+@router.get("/ping")
+async def ping(current_user=Depends(manager)):
+    return {"pong": True}
+
+
+@router.post("/login")
 async def login(data: OAuth2PasswordRequestForm = Depends()):
     email = data.username
     password = data.password
@@ -28,7 +32,5 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
     elif password != user.password:
         raise InvalidCredentialsException
 
-    access_token = manager.create_access_token(
-        data={'sub': email}
-    )
-    return {'token': access_token}
+    access_token = manager.create_access_token(data={"sub": email})
+    return {"token": access_token}

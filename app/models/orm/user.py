@@ -4,7 +4,7 @@ from .base import Base, db
 class User(Base):
     __tablename__ = "users"
     name = db.Column(db.String(255))
-    email = db.Column(db.EmailType, nullable=False, index=True)
+    email = db.Column(db.EmailType, nullable=False, index=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
 
     @classmethod

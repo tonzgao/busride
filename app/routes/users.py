@@ -1,4 +1,3 @@
-from arq.connections import ArqRedis, create_pool
 from fastapi import APIRouter
 
 from ..models.orm.user import User as ORMUser
@@ -6,6 +5,7 @@ from ..models.pydantic.user import User, UserCreateIn, UserUpdateIn
 from ..settings.arq import settings as redis_settings
 
 router = APIRouter()
+
 
 @router.post("/users", tags=["Users"], response_model=User)
 async def create_user(request: UserCreateIn):

@@ -16,7 +16,13 @@ from app.routes.auth import router as auth_router
 from app.settings.globals import SENTRY_DSN
 
 
-ROUTERS = (user_router, entity_router, api_router, interest_router, auth_router)
+ROUTERS = (
+    user_router,
+    entity_router,
+    api_router,
+    interest_router,
+    auth_router,
+)
 
 for r in ROUTERS:
     app.include_router(r)
