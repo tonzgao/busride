@@ -1,8 +1,8 @@
 import pytest
 from starlette.config import environ
 
-from ..settings.globals import DATABASE_CONFIG
 from ..application import db
+from ..settings.globals import DATABASE_CONFIG
 
 environ["TESTING"] = "True"
 

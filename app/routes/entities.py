@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from ..models.orm.entity import Entity as ORMEntity
 from ..models.pydantic.entity import Entity, EntityCreateIn
-from ..utils.wikidata import list_entities, get_entity
+from ..utils.wikidata import get_entity, list_entities
 
 router = APIRouter()
 

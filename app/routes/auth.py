@@ -1,10 +1,9 @@
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-
+from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
 
 from ..models.orm.user import User as ORMUser
-from fastapi_login import LoginManager
 
 manager = LoginManager("secret", "/login", use_cookie=True)
 

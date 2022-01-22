@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
 from ..models.orm.interest import Interest as ORMInterest
-from ..models.pydantic.user import User
 from ..models.pydantic.interest import Interest, InterestCreateIn
+from ..models.pydantic.user import User
 from .auth import manager
 
 router = APIRouter()

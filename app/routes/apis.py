@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends
 from ..models.orm.api import Api as ORMApi
 from ..models.pydantic.api import Api, ApiCreateIn
 from ..models.pydantic.user import User
-
 from .auth import manager
 
 router = APIRouter()
