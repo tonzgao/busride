@@ -13,6 +13,7 @@ from app.routes.entities import router as entity_router
 from app.routes.apis import router as api_router
 from app.routes.interests import router as interest_router
 from app.routes.auth import router as auth_router
+from app.routes.rss import router as rss_router
 from app.settings.globals import SENTRY_DSN
 
 
@@ -22,6 +23,7 @@ ROUTERS = (
     api_router,
     interest_router,
     auth_router,
+    rss_router,
 )
 
 for r in ROUTERS:

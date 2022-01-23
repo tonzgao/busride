@@ -12,4 +12,8 @@ class Api(Base):
 
     @classmethod
     async def get_key(cls, name: str):
-        return await cls.query.where(cls.name == name).order_by(cls.updated_on).gino.first()
+        return (
+            await cls.query.where(cls.name == name)
+            .order_by(cls.updated_on)
+            .gino.first()
+        )

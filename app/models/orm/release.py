@@ -6,5 +6,5 @@ class Release(Base):
     entity_id = db.Column(
         db.BigInteger, db.ForeignKey("entities.id"), nullable=False
     )
-    release_date = db.Column(db.DateTime)
+    release_date = db.Column(db.DateTime, index=True)
     data = db.Column(db.JSONB)

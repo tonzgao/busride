@@ -4,8 +4,10 @@ from pydantic import BaseModel
 
 from .base import Base
 
+
 class ApiEnum(str, Enum):
-    tmdb = 'tmdb'
+    tmdb = "tmdb"
+
 
 class Api(Base):
     name: ApiEnum
