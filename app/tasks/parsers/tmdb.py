@@ -1,13 +1,15 @@
 import requests
 
+from app.models.orm.api import Api
+from app.models.pydantic.api import ApiEnum
+
 # No rate limits?
 class TMDB:
-    def get_key(self):
-        # TODO - pull from db
-        return ""
+    async def get_key(self):
+        return await Api.get_key(ApiEnum.tmdb)
 
-    def get_person_releases(self, person: str):
-        key = self.get_key()
+    async def get_person_releases(self, person: str):
+        key = await self.get_key()
         result = requests.get(
             f"https://api.themoviedb.org/3/person/{person}/combined_credits?api_key={key}"
         )

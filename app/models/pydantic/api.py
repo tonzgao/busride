@@ -1,14 +1,18 @@
+from enum import Enum
+
 from pydantic import BaseModel
 
 from .base import Base
 
+class ApiEnum(str, Enum):
+    tmdb = 'tmdb'
 
 class Api(Base):
-    name: str
+    name: ApiEnum
     data: dict
     is_active: bool = True
 
 
 class ApiCreateIn(BaseModel):
-    name: str
+    name: ApiEnum
     data: dict
