@@ -21,4 +21,7 @@ def get_entity(id: str):
     request = api.Request(
         site=site, action="wbgetentities", format="json", ids=id
     )
-    return request.submit()
+    result = request.submit()
+    if not result["success"]:
+        raise Exception(result)
+    return result["entities"][id]

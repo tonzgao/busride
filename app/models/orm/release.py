@@ -3,6 +3,7 @@ from .base import Base, db
 
 class Release(Base):
     __tablename__ = "releases"
+    # Title?
     entity_id = db.Column(
         db.BigInteger, db.ForeignKey("entities.id"), nullable=False
     )
