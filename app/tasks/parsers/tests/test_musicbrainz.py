@@ -11,9 +11,7 @@ def test_parser():
     assert len(result) == 23
     sample = result[0]
     assert sample == {
-        "data": {
-            "title": "Sob a lua do bode / Demoniac Vengeance",
-            "type": "Album",
-        },
+        "data": {"type": "Album",},
         "release_date": "2000-01",
+        "title": "Sob a lua do bode / Demoniac Vengeance",
     }

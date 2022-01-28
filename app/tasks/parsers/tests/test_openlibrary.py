@@ -728,9 +728,6 @@ def test_parser():
     print("here", sample)
     assert sample == {
         "release_date": "2009-12-10T22:50:49.125618",
-        "data": {
-            "title": "The Name of the Wind",
-            "last_modified": "2021-12-03T19:06:08.431092",
-            "authors": 1,
-        },
+        "title": "The Name of the Wind",
+        "data": {"last_modified": "2021-12-03T19:06:08.431092", "authors": 1,},
     }

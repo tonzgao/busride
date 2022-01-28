@@ -18,9 +18,9 @@ class OpenLibrary:
 
     def parse_release(self, release: dict):
         return {
+            "title": release["title"],
             "release_date": release["created"]["value"],
             "data": {
-                "title": release["title"],
                 "last_modified": release["last_modified"]["value"],
                 # Most greater than 1 are side projects or translations
                 "authors": len(release["authors"]) - 1,

@@ -25,5 +25,6 @@ class MusicBrainz:
         type = xml.find(f"{header}primary-type")
         return {
             "release_date": date.text,
-            "data": {"title": title.text, "type": type.text},
+            "title": title.text,
+            "data": {"type": type.text},
         }
