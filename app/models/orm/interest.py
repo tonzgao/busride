@@ -6,7 +6,9 @@ from .base import Base, db
 class Interest(Base):
     __tablename__ = "interests"
     user_id = db.Column(
-        db.BigInteger, db.ForeignKey("users.id", ondelete='CASCADE'), nullable=False
+        db.BigInteger,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
     entity_id = db.Column(
         db.BigInteger, db.ForeignKey("entities.id"), nullable=False

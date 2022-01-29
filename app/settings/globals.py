@@ -29,3 +29,7 @@ SENTRY_DSN: Optional[Secret] = config("SENTRY_DSN", cast=Secret, default=None)
 ARQ_BACKGROUND_FUNCTIONS: Optional[CommaSeparatedStrings] = config(
     "ARQ_BACKGROUND_FUNCTIONS", cast=CommaSeparatedStrings, default=None
 )
+
+ARQ_CRONJOBS: Optional[CommaSeparatedStrings] = config(
+    "ARQ_CRONJOBS", cast=CommaSeparatedStrings, default=None
+)

@@ -5,7 +5,9 @@ class Release(Base):
     __tablename__ = "releases"
     title = db.Column(db.String(255), nullable=False)
     entity_id = db.Column(
-        db.BigInteger, db.ForeignKey("entities.id", ondelete='CASCADE'), nullable=False
+        db.BigInteger,
+        db.ForeignKey("entities.id", ondelete="CASCADE"),
+        nullable=False,
     )
     release_date = db.Column(db.DateTime, index=True)
     data = db.Column(db.JSONB)

@@ -53,6 +53,17 @@ pydantic = ">=1"
 watch = ["watchgod (>=0.4)"]
 
 [[package]]
+name = "arrow"
+version = "1.2.2"
+description = "Better dates & times for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+python-dateutil = ">=2.7.0"
+
+[[package]]
 name = "async-timeout"
 version = "4.0.2"
 description = "Timeout context manager for asyncio programs"
@@ -1049,7 +1060,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "47d682e87bc10709b458a987b0e0b5c803f279cee58962db4f2c2e7ccc4e91a4"
+content-hash = "d1f51d0ca11088ff65822474be7564c469a89f1222f2ef4911c6ca65e1ae3ae3"
 
 [metadata.files]
 aioredis = [
@@ -1067,6 +1078,10 @@ appdirs = [
 arq = [
     {file = "arq-0.19.1-py3-none-any.whl", hash = "sha256:ddcaa34b146a5a829f4229ce3390a3670919e3b9b91e7f1b9a210fdb6084c0b7"},
     {file = "arq-0.19.1.tar.gz", hash = "sha256:8c11fc1335aabdb1d68be6e75ff384dbd3763a9d920bebff7f034bfa9d97c4f0"},
+]
+arrow = [
+    {file = "arrow-1.2.2-py3-none-any.whl", hash = "sha256:d622c46ca681b5b3e3574fcb60a04e5cc81b9625112d5fb2b44220c36c892177"},
+    {file = "arrow-1.2.2.tar.gz", hash = "sha256:05caf1fd3d9a11a1135b2b6f09887421153b94558e5ef4d090b567b47173ac2b"},
 ]
 async-timeout = [
     {file = "async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},

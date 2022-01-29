@@ -24,6 +24,7 @@ mwparserfromhell = "^0.6.3"
 fastapi-login = "^1.7.3"
 python-multipart = "^0.0.5"
 feedgen = "^0.9.0"
+arrow = "^1.2.2"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
