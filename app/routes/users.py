@@ -3,13 +3,17 @@ from fastapi import APIRouter
 from ..models.orm.user import User as ORMUser
 from ..models.pydantic.user import User, UserCreateIn, UserUpdateIn
 from ..settings.arq import settings as redis_settings
+from .auth import pwd_context
 
 router = APIRouter()
 
 
 @router.post("/users", tags=["Users"], response_model=User)
 async def create_user(request: UserCreateIn):
-    new_user: ORMUser = await ORMUser.create(**request.dict())
+    hashed_password = pwd_context.hash(request.password)
+    new_user: ORMUser = await ORMUser.create(
+        name=request.name, email=request.email, password=hashed_password
+    )
     return User.from_orm(new_user)
 
 

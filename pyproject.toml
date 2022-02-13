@@ -25,6 +25,7 @@ fastapi-login = "^1.7.3"
 python-multipart = "^0.0.5"
 feedgen = "^0.9.0"
 arrow = "^1.2.2"
+passlib = "^1.7.4"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"

@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
+from passlib.context import CryptContext
 
 from ..models.orm.user import User as ORMUser
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 manager = LoginManager("secret", "/login", use_cookie=True)
 
 router = APIRouter()
@@ -28,7 +30,7 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
     user = await query_user(email)
     if not user:
         raise InvalidCredentialsException
-    elif password != user.password:
+    if not pwd_context.verify(password, user.password):
         raise InvalidCredentialsException
 
     access_token = manager.create_access_token(data={"sub": email})
