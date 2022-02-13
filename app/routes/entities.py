@@ -42,6 +42,8 @@ async def delete_entity(id: int):
 )
 async def retrieve_entity_by_identifier(identifier: str):
     entity: ORMEntity = await ORMEntity.get_by_identifier(identifier)
+    if not entity:
+        return
     return Entity.from_orm(entity)
 
 

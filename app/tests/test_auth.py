@@ -7,7 +7,7 @@ client = BusrideClient(TestClient(app))
 
 
 def test_ping():
-    respose = client.requests.get("/ping")
+    respose = client.requests.get("/whoami")
     assert respose.status_code == 401
 
 
@@ -18,7 +18,6 @@ def test_login_success():
         pass
     response = client.login("test@gmail.com", "password")
     assert response.status_code == 200
-    token = client.token
-    headers = {"Authorization": f"Bearer {token}"}
-    response = client.requests.get("/ping", headers=headers)
+    assert client.token is not None
+    response = client.requests.get("/whoami", headers=client._gen_auth_headers())
     assert response.status_code == 200

@@ -1,9 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from ..models.orm.user import User as ORMUser
 from ..models.pydantic.user import User, UserCreateIn, UserUpdateIn
 from ..settings.arq import settings as redis_settings
-from .auth import pwd_context
+from .auth import pwd_context, manager
 
 router = APIRouter()
 
@@ -35,3 +35,8 @@ async def update_user(request: UserUpdateIn, id: int):
 async def delete_user(id: int):
     user: ORMUser = await ORMUser.get(id)
     return await user.delete()
+
+
+@router.get("/whoami", tags=["Users"], response_model=User)
+async def whoami(current_user=Depends(manager)):
+    return current_user

@@ -16,12 +16,6 @@ router = APIRouter()
 async def query_user(email: str):
     return await ORMUser.get_by_email(email)
 
-
-@router.get("/ping")
-async def ping(current_user=Depends(manager)):
-    return {"pong": True}
-
-
 @router.post("/login")
 async def login(data: OAuth2PasswordRequestForm = Depends()):
     email = data.username

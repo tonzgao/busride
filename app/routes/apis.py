@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi_login.exceptions import InvalidCredentialsException
 
 from ..models.orm.api import Api as ORMApi
 from ..models.pydantic.api import Api, ApiCreateIn
@@ -19,6 +20,8 @@ async def create_api(
 
 
 @router.delete("/apis/{id}", tags=["Apis"], response_model=Api)
-async def delete_api(id: int):
+async def delete_api(id: int, current_user: User = Depends(manager)):
     api: ORMApi = await ORMApi.get(id)
+    if api.user_id != current_user.id:
+        raise InvalidCredentialsException()
     return await api.delete()

@@ -19,9 +19,14 @@ class Requester:
 
 
 class BusrideClient:
-    def __init__(self, requestor: requests=Requester()):
+    def __init__(self, requestor: requests = Requester()):
         self.requests = requestor
         self.token = None
+
+    def _gen_auth_headers(self):
+        if not self.token:
+            raise Exception("Not logged in")
+        return {"Authorization": f"Bearer {self.token}"}
 
     def create_user(self, name: str, email: str, password: str):
         response = self.requests.post(
@@ -38,7 +43,17 @@ class BusrideClient:
         return response
 
     def query_entities(self, name: str):
-        pass
+        return self.requests.get(f"/entities/tags/{name}")
 
     def follow_entity(self, id: str):
-        pass
+        entity = self.requests.get(f"/entities/tag/{id}").json()
+        if not entity:
+            entity = self.requests.post(
+                f"/entities", json={"identifier": id}
+            ).json()
+        response = self.requests.post(
+            "/interests",
+            json={"entity_id": entity["id"],},
+            headers=self._gen_auth_headers(),
+        )
+        return response
