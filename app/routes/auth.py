@@ -16,6 +16,7 @@ router = APIRouter()
 async def query_user(email: str):
     return await ORMUser.get_by_email(email)
 
+
 @router.post("/login")
 async def login(data: OAuth2PasswordRequestForm = Depends()):
     email = data.username

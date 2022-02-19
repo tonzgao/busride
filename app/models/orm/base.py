@@ -8,7 +8,7 @@ from ...application import db
 db.JSONB, db.UUID, db.EmailType = (JSONB, UUID, EmailType)
 
 
-@generic_repr
+# @generic_repr # https://github.com/leosussan/fastapi-gino-arq-uvicorn/issues/16
 class Base(db.Model):
     __abstract__ = True
     created_on = db.Column(

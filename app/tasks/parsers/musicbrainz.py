@@ -1,3 +1,4 @@
+import arrow
 import requests
 import xml.etree.ElementTree as ET
 
@@ -24,7 +25,7 @@ class MusicBrainz:
         date = xml.find(f"{header}first-release-date")
         type = xml.find(f"{header}primary-type")
         return {
-            "release_date": date.text,
+            "release_date": arrow.get(date.text),
             "title": title.text,
             "data": {"type": type.text},
         }

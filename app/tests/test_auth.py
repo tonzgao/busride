@@ -19,5 +19,7 @@ def test_login_success():
     response = client.login("test@gmail.com", "password")
     assert response.status_code == 200
     assert client.token is not None
-    response = client.requests.get("/whoami", headers=client._gen_auth_headers())
+    response = client.requests.get(
+        "/whoami", headers=client._gen_auth_headers()
+    )
     assert response.status_code == 200

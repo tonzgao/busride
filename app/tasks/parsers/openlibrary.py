@@ -1,3 +1,4 @@
+import arrow
 import requests
 
 # https://openlibrary.org/dev/docs/api/authors
@@ -19,7 +20,7 @@ class OpenLibrary:
     def parse_release(self, release: dict):
         return {
             "title": release["title"],
-            "release_date": release["created"]["value"],
+            "release_date": arrow.get(release["created"]["value"]),
             "data": {
                 "last_modified": release["last_modified"]["value"],
                 # Most greater than 1 are side projects or translations
