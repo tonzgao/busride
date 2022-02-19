@@ -1,3 +1,5 @@
+import arrow
+import pprint
 from fastapi import APIRouter
 from feedgen.feed import FeedGenerator
 
@@ -8,9 +10,18 @@ router = APIRouter()
 
 def generate_feed(releases):
     fg = FeedGenerator()
-    fg.title("TODO")
-    fg.description("TODO")
+    fg.title("Busride Feed")
+    fg.description("Are we there yet?")
     fg.link(href="busride")
+
+    for release in releases:
+        print(release)
+        fe = fg.add_entry()
+        fe.id(release["title"])
+        fe.title(release["title"])
+        fe.pubDate(arrow.get(release["release_date"]).format())
+        fe.description(pprint.pformat(release["data"]))
+
     rssfeed = fg.rss_str(pretty=True)
     return rssfeed
 
