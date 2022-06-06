@@ -3,6 +3,9 @@ import requests
 from app.models.orm.api import Api
 from app.models.pydantic.api import ApiEnum
 
+from ...logger import logger
+
+
 # No rate limits?
 class TMDB:
     async def get_key(self):
@@ -19,4 +22,5 @@ class TMDB:
         raise Exception("TODO")
 
     def parse_releases(self, xml: dict):
+        logger.debug(xml)
         return xml

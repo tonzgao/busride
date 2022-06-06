@@ -1,5 +1,6 @@
-import arrow
 import pprint
+
+import arrow
 from fastapi import APIRouter
 from feedgen.feed import FeedGenerator
 

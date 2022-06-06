@@ -1,13 +1,15 @@
 import arrow
-from app.models.orm.entity import Entity
-from app.models.orm.release import Release
 from arq import cron
 from sqlalchemy import and_
 
+from app.models.orm.entity import Entity
+from app.models.orm.release import Release
+
+from ..logger import logger
+from .parsers.igdb import IGDB
 from .parsers.musicbrainz import MusicBrainz
 from .parsers.openlibrary import OpenLibrary
 from .parsers.tmdb import TMDB
-from .parsers.igdb import IGDB
 
 
 class ReleaseChecker:
@@ -22,6 +24,7 @@ class ReleaseChecker:
 
     async def check_releases(self):
         entities = await self.get_entities()
+        logger.debug(f"Checking {len(entities)} entities")
         for entity in entities:
             for key, data in self.parse_entity(entity):
                 releases = self.parse_releases(key, data)
@@ -54,6 +57,9 @@ class ReleaseChecker:
             release_date = release["release_date"]
             if release_date < self.last_run.shift(days=-1):
                 continue
+            logger.info(
+                f"{entity.identifier} {release.title} {release.release_date}"
+            )
             await self.create_or_update_release(release, entity)
 
     async def create_or_update_release(

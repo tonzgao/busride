@@ -1,6 +1,8 @@
 from datetime import datetime
+
 import arrow
 from arq import cron
+
 from app.models.orm.base import db
 from app.models.orm.release import Release
 

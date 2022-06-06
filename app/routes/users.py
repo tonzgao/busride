@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from ..models.orm.user import User as ORMUser
 from ..models.pydantic.user import User, UserCreateIn, UserUpdateIn
 from ..settings.arq import settings as redis_settings
-from .auth import pwd_context, manager
+from .auth import manager, pwd_context
 
 router = APIRouter()
 

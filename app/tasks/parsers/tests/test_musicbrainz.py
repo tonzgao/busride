@@ -10,8 +10,4 @@ def test_parser():
     result = [x for x in parser.parse_releases(xml)]
     assert len(result) == 23
     sample = result[0]
-    assert sample == {
-        "data": {"type": "Album",},
-        "release_date": "2000-01",
-        "title": "Sob a lua do bode / Demoniac Vengeance",
-    }
+    assert sample["title"] == "Sob a lua do bode / Demoniac Vengeance"

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from ..main import app
 from ..client.client import BusrideClient
+from ..main import app
 
 client = BusrideClient(TestClient(app))
 

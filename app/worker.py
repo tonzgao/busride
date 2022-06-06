@@ -14,8 +14,6 @@ from .settings.globals import (
     DATABASE_CONFIG,
 )
 
-print("here", ARQ_BACKGROUND_FUNCTIONS, ARQ_CRONJOBS)
-
 FUNCTIONS: list = [
     import_string(background_function)
     for background_function in list(ARQ_BACKGROUND_FUNCTIONS)
@@ -24,7 +22,6 @@ FUNCTIONS: list = [
 CRONJOBS: list = [
     import_string(cronjob) for cronjob in list(ARQ_CRONJOBS)
 ] if ARQ_CRONJOBS is not None else list()
-print("wtf", CRONJOBS)
 
 
 async def startup(ctx):

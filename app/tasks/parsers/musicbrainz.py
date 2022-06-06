@@ -1,6 +1,9 @@
+import xml.etree.ElementTree as ET
+
 import arrow
 import requests
-import xml.etree.ElementTree as ET
+
+from ...logger import logger
 
 header = "{http://musicbrainz.org/ns/mmd-2.0#}"
 
@@ -15,6 +18,7 @@ class MusicBrainz:
         return self.parse_releases(result.text)
 
     def parse_releases(self, xml: str):
+        logger.debug(xml)
         root = ET.fromstring(xml)
         for release in root[0]:
             result = self.parse_release(release)

@@ -1,6 +1,9 @@
 import arrow
 import requests
 
+from ...logger import logger
+
+
 # https://openlibrary.org/dev/docs/api/authors
 # Currently only 100 requests/IP are allowed for every 5 minutes.
 class OpenLibrary:
@@ -13,6 +16,7 @@ class OpenLibrary:
         return self.parse_releases(result.json())
 
     def parse_releases(self, json: dict):
+        logger.debug(json)
         for entry in json["entries"]:
             result = self.parse_release(entry)
             yield result
