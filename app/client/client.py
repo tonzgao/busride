@@ -42,8 +42,16 @@ class BusrideClient:
             self.token = response.json()["token"]
         return response
 
+    def follow_match(self, name: str):
+        entities = self.query_entities(name)
+        entity = entities["search"][0]
+        if not entity:
+            raise Exception("Not found")
+        self.follow_entity(entity["id"])
+        return entity
+
     def query_entities(self, name: str):
-        return self.requests.get(f"/entities/tags/{name}")
+        return self.requests.get(f"/entities/tags/{name}").json()
 
     def follow_entity(self, id: str):
         entity = self.requests.get(f"/entities/tag/{id}").json()
@@ -57,3 +65,6 @@ class BusrideClient:
             headers=self._gen_auth_headers(),
         )
         return response
+
+    def debug_entity(self, id: str):
+        return self.requests.post(f"/entities/{id}/force_check").json()

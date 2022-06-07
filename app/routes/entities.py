@@ -4,6 +4,8 @@ from ..models.orm.entity import Entity as ORMEntity
 from ..models.pydantic.entity import Entity, EntityCreateIn
 from ..utils.wikidata import get_entity, list_entities
 
+from ..tasks.release_checker import ReleaseChecker
+
 router = APIRouter()
 
 # TODO: allow non-wikidata datasources
@@ -22,13 +24,26 @@ async def create_entity(request: EntityCreateIn):
     new_entity: ORMEntity = await ORMEntity.create(
         identifier=request.identifier, data=data
     )
-    return Entity.from_orm(new_entity)
+    entity = Entity.from_orm(new_entity)
+    # TODO: Run in release checker in background
+    return entity
 
 
 @router.get("/entities/{id}", tags=["Entities"], response_model=Entity)
 async def retrieve_entity(id: int):
     entity: ORMEntity = await ORMEntity.get(id)
     return Entity.from_orm(entity)
+
+
+@router.post(
+    "/entities/{id}/force_check", tags=["Entities"], response_model=Entity
+)
+async def retrieve_entity(id: int):
+    # TODO: add auth requirements
+    entity: ORMEntity = await ORMEntity.get(id)
+    checker = ReleaseChecker()
+    await checker.check_entity(entity)
+    return entity
 
 
 @router.delete("/entities/{id}", tags=["Entities"], response_model=Entity)

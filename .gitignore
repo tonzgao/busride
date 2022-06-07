@@ -11,3 +11,8 @@ throttle.ctrl
 
 # Environment Files
 /.env
+
+# Local dev stuff
+busride.log
+setup.sh
+start.py

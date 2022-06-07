@@ -16,30 +16,33 @@ class ReleaseChecker:
     def __init__(self, now: arrow.Arrow = arrow.utcnow()) -> None:
         self.last_run = now.shift(days=-1)  # TODO: set last run in redis
         self.parsers = {
-            "P4985": TMDB(),
-            "P9650": IGDB(),
-            "P434": MusicBrainz(),
-            "P648": OpenLibrary(),
+            "P4985": TMDB(),  # TV Person
+            "P4983": TMDB(),  # TV Series
+            "P9650": IGDB(),  # Video Game Company or Publisher
+            # TODO: Video Game Series
+            "P434": MusicBrainz(),  # Artist
+            "P648": OpenLibrary(),  # Author
+            # TODO: Book Series
         }
 
     async def check_releases(self):
         entities = await self.get_entities()
         logger.debug(f"Checking {len(entities)} entities")
         for entity in entities:
-            for key, data in self.parse_entity(entity):
-                releases = self.parse_releases(key, data)
-                await self.generate_new_releases(releases, entity)
+            self.check_entity(entity)
 
     async def get_entities(self):
         entities = (
-            await Entity.query.where(
-                True
-                # Entity.updated_on < self.last_run.naive
-            )
+            await Entity.query.where(Entity.updated_on < self.last_run.naive)
             .order_by(Entity.updated_on)
             .gino.all()
         )
         return entities
+
+    async def check_entity(self, entity):
+        for key, data in self.parse_entity(entity):
+            releases = self.parse_releases(key, data)
+            await self.generate_new_releases(releases, entity)
 
     def parse_entity(self, entity: Entity):
         claims = entity.data["claims"]
@@ -61,6 +64,8 @@ class ReleaseChecker:
                 f"{entity.identifier} {release.title} {release.release_date}"
             )
             await self.create_or_update_release(release, entity)
+        # Touch entity to prevent rerunning on next check_releases call
+        entity.update(updated_on=arrow.now().datetime)
 
     async def create_or_update_release(
         self, release: Release, entity: Entity

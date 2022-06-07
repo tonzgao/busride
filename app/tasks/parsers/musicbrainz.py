@@ -21,13 +21,19 @@ class MusicBrainz:
         logger.debug(xml)
         root = ET.fromstring(xml)
         for release in root[0]:
-            result = self.parse_release(release)
-            yield result
+            try:
+                result = self.parse_release(release)
+                if result:
+                    yield result
+            except Exception as e:
+                logger.warn(f"Failed to parse release", exc_info=e)
 
     def parse_release(self, xml: ET.Element):
         title = xml.find(f"{header}title")
         date = xml.find(f"{header}first-release-date")
         type = xml.find(f"{header}primary-type")
+        if not date.text:
+            return
         return {
             "release_date": arrow.get(date.text),
             "title": title.text,

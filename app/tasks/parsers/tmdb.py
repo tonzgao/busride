@@ -11,6 +11,10 @@ class TMDB:
     async def get_key(self):
         return await Api.get_key(ApiEnum.tmdb)
 
+    def get_releases(self, data):
+        # TODO
+        return []
+
     async def get_person_releases(self, person: str):
         key = await self.get_key()
         result = requests.get(

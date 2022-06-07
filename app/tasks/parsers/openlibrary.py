@@ -7,6 +7,14 @@ from ...logger import logger
 # https://openlibrary.org/dev/docs/api/authors
 # Currently only 100 requests/IP are allowed for every 5 minutes.
 class OpenLibrary:
+    def get_releases(self, data):
+        # TODO
+        return []
+
+    def get_series_releases(self, data):
+        # TODO
+        return []
+
     def get_author_releases(self, data):
         author = data["mainsnak"]["datavalue"]["value"]
         # Releases are ordered by last_modified
