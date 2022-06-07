@@ -3,7 +3,7 @@ import requests
 from app.models.orm.api import Api
 from app.models.pydantic.api import ApiEnum
 
-from ...logger import logger
+from ...libs.logger import logger
 
 
 # No rate limits?

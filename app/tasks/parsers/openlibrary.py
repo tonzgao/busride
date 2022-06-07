@@ -1,25 +1,18 @@
 import arrow
 import requests
 
-from ...logger import logger
+from ...libs.logger import logger
 
 
 # https://openlibrary.org/dev/docs/api/authors
 # Currently only 100 requests/IP are allowed for every 5 minutes.
 class OpenLibrary:
     def get_releases(self, data):
-        # TODO
-        return []
-
-    def get_series_releases(self, data):
-        # TODO
-        return []
-
-    def get_author_releases(self, data):
         author = data["mainsnak"]["datavalue"]["value"]
+        print("hmm", author)
         # Releases are ordered by last_modified
         result = requests.get(
-            f"https://openlibrary.org/authors/${author}/works.json?limit=100"
+            f"https://openlibrary.org/authors/{author}/works.json?limit=100"
         )
         return self.parse_releases(result.json())
 

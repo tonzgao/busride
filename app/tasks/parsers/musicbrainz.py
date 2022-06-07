@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import arrow
 import requests
 
-from ...logger import logger
+from ...libs.logger import logger
 
 header = "{http://musicbrainz.org/ns/mmd-2.0#}"
 

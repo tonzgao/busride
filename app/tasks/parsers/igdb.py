@@ -1,4 +1,4 @@
-from ...logger import logger
+from ...libs.logger import logger
 
 
 # TODO https://api-docs.igdb.com/#account-creation

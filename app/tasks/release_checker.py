@@ -5,7 +5,9 @@ from sqlalchemy import and_
 from app.models.orm.entity import Entity
 from app.models.orm.release import Release
 
-from ..logger import logger
+from ..libs.logger import logger
+from ..libs.redis import get_redis
+
 from .parsers.igdb import IGDB
 from .parsers.musicbrainz import MusicBrainz
 from .parsers.openlibrary import OpenLibrary
@@ -14,6 +16,7 @@ from .parsers.tmdb import TMDB
 
 class ReleaseChecker:
     def __init__(self, now: arrow.Arrow = arrow.utcnow()) -> None:
+        self.redis = None
         self.last_run = now.shift(days=-1)  # TODO: set last run in redis
         self.parsers = {
             "P4985": TMDB(),  # TV Person
@@ -25,11 +28,22 @@ class ReleaseChecker:
             # TODO: Book Series
         }
 
+    async def get_last_run(self):
+        self.redis = await get_redis()
+        last_run = await self.redis.get("busride-last-run")
+        if last_run:
+            self.last_run = arrow(last_run)
+
+    async def set_last_run(self):
+        await self.redis.set("busride-last-run", str(arrow.utcnow()))
+
     async def check_releases(self):
+        await self.get_last_run()
         entities = await self.get_entities()
         logger.debug(f"Checking {len(entities)} entities")
         for entity in entities:
             self.check_entity(entity)
+        await self.set_last_run()
 
     async def get_entities(self):
         entities = (
