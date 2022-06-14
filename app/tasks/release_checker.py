@@ -11,7 +11,7 @@ from ..libs.redis import get_redis
 from .parsers.igdb import IGDB
 from .parsers.musicbrainz import MusicBrainz
 from .parsers.openlibrary import OpenLibrary
-from .parsers.tmdb import TMDB
+from .parsers.tmdb import TMDBPerson, TMDBSeries
 
 
 class ReleaseChecker:
@@ -19,8 +19,8 @@ class ReleaseChecker:
         self.redis = None
         self.last_run = now.shift(days=-1)  # TODO: set last run in redis
         self.parsers = {
-            "P4985": TMDB(),  # TV Person
-            "P4983": TMDB(),  # TV Series
+            "P4985": TMDBPerson(),  # TV Person
+            "P4983": TMDBSeries(),  # TV Series
             "P9650": IGDB(),  # Video Game Company or Publisher
             # TODO: Video Game Series
             "P434": MusicBrainz(),  # Artist
@@ -30,19 +30,21 @@ class ReleaseChecker:
 
     async def get_last_run(self):
         self.redis = await get_redis()
-        last_run = await self.redis.get("busride-last-run")
+        last_run = await self.redis.execute("GET", "busride-last-run")
         if last_run:
-            self.last_run = arrow(last_run)
+            self.last_run = arrow.get(last_run.decode("utf-8"))
 
     async def set_last_run(self):
-        await self.redis.set("busride-last-run", str(arrow.utcnow()))
+        await self.redis.execute(
+            "SET", "busride-last-run", str(arrow.utcnow())
+        )
 
     async def check_releases(self):
         await self.get_last_run()
         entities = await self.get_entities()
         logger.debug(f"Checking {len(entities)} entities")
         for entity in entities:
-            self.check_entity(entity)
+            await self.check_entity(entity)
         await self.set_last_run()
 
     async def get_entities(self):
@@ -55,7 +57,7 @@ class ReleaseChecker:
 
     async def check_entity(self, entity):
         for key, data in self.parse_entity(entity):
-            releases = self.parse_releases(key, data)
+            releases = await self.parse_releases(key, data)
             await self.generate_new_releases(releases, entity)
 
     def parse_entity(self, entity: Entity):
@@ -64,8 +66,13 @@ class ReleaseChecker:
             if key in self.parsers:
                 yield key, value[0]
 
-    def parse_releases(self, key: str, data: dict) -> "list[Release]":
-        return self.parsers[key].get_releases(data)
+    async def parse_releases(self, key: str, data: dict) -> "list[Release]":
+        parser = self.parsers[key]
+        try:
+            return await parser.get_releases(data)
+        except Exception as e:
+            logger.warn(f"Error parsing {key}")
+            raise e
 
     async def generate_new_releases(
         self, releases: "list[Release]", entity: Entity
@@ -75,7 +82,7 @@ class ReleaseChecker:
             if release_date < self.last_run.shift(days=-1):
                 continue
             logger.info(
-                f"{entity.identifier} {release.title} {release.release_date}"
+                f"{entity.identifier} {release['title']} {release['release_date']}"
             )
             await self.create_or_update_release(release, entity)
         # Touch entity to prevent rerunning on next check_releases call

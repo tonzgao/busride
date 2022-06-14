@@ -34,6 +34,13 @@ class BusrideClient:
         )
         return response
 
+    def add_api(self, name, data):
+        return self.requests.post(
+            "/apis",
+            json={"name": name, "data": data},
+            headers=self._gen_auth_headers(),
+        )
+
     def login(self, username: str, password: str):
         response = self.requests.post(
             "/login", {"username": username, "password": password}

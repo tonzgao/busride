@@ -9,13 +9,14 @@ header = "{http://musicbrainz.org/ns/mmd-2.0#}"
 
 # Currently that rate is (on average) 1 request per second.
 class MusicBrainz:
-    def get_releases(self, data):
+    async def get_releases(self, data):
         artist = data["mainsnak"]["datavalue"]["value"]
         # TODO: set user agent https://musicbrainz.org/doc/MusicBrainz_API/Rate_Limiting#Provide_meaningful_User-Agent_strings
         result = requests.get(
             f"https://musicbrainz.org/ws/2/release-group?artist={artist}&type=album|ep&limit=100"
         )
-        return self.parse_releases(result.text)
+        result = self.parse_releases(result.text)
+        return result
 
     def parse_releases(self, xml: str):
         logger.debug(xml)
