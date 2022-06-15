@@ -21,7 +21,7 @@ class ReleaseChecker:
         self.parsers = {
             "P4985": TMDBPerson(),  # TV Person
             "P4983": TMDBSeries(),  # TV Series
-            "P9650": IGDB(),  # Video Game Company or Publisher
+            # "P9650": IGDB(),  # Video Game Company or Publisher
             # TODO: Video Game Series
             "P434": MusicBrainz(),  # Artist
             "P648": OpenLibrary(),  # Author

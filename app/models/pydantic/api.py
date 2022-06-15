@@ -7,6 +7,7 @@ from .base import Base
 
 class ApiEnum(str, Enum):
     tmdb = "tmdb"
+    igdb = "igdb"
 
 
 class Api(Base):
