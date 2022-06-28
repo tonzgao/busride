@@ -3,12 +3,15 @@ from fastapi import APIRouter
 from ..models.orm.entity import Entity as ORMEntity
 from ..models.pydantic.entity import Entity, EntityCreateIn
 from ..utils.wikidata import get_entity, list_entities
-
-from ..tasks.release_checker import ReleaseChecker
+from ..libs.redis import get_redis
 
 router = APIRouter()
-
 # TODO: allow non-wikidata datasources
+
+
+async def check_entity(entity):
+    redis = await get_redis()
+    await redis.enqueue_job("check_entity", entity)
 
 
 @router.get("/entities/tags/{name}")
@@ -25,7 +28,7 @@ async def create_entity(request: EntityCreateIn):
         identifier=request.identifier, data=data
     )
     entity = Entity.from_orm(new_entity)
-    # TODO: Run in release checker in background
+    await check_entity(entity)
     return entity
 
 
@@ -41,8 +44,7 @@ async def retrieve_entity(id: int):
 async def retrieve_entity(id: int):
     # TODO: add auth requirements
     entity: ORMEntity = await ORMEntity.get(id)
-    checker = ReleaseChecker()
-    await checker.check_entity(entity)
+    await check_entity(entity)
     return entity
 
 
